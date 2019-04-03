@@ -31,12 +31,13 @@ public class MainActivity extends AppCompatActivity {
     String endString;
     ArrayList<String> arrayList = new ArrayList<>();
     EditText editText;
+    ArrayAdapter<String> itemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ArrayAdapter<String> itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
+        itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arrayList);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -50,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 buttonMethodStuff();
+                editText.setText(null);
             }
         });
 
@@ -63,7 +65,10 @@ public class MainActivity extends AppCompatActivity {
 
             String[] stringarr = string.split(" ");
             final String email = stringarr[1];
+
             final String password = stringarr[2];
+        Log.d(TAG, email +" "+password);
+
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -86,8 +91,13 @@ public class MainActivity extends AppCompatActivity {
                     });
 
         } else {
+            if (string.isEmpty()||string.startsWith(" ")) {
 
-            endString = string;
+            }else{
+                arrayList.add(string);
+                listView.setAdapter(itemsAdapter);
+
+            }
         }
 
     }
